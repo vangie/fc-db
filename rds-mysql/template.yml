@@ -1,0 +1,245 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Parameters:
+  MasterUserPassword:
+    Type: String
+    Default: masteruser@Passwd
+  MasterUserName:
+    Type: String
+    Default: masterusername
+  DBName:
+    Type: String
+    Default: mydb
+  VpcName:
+    Type: String
+    Default: myVPC
+  CidrBlock:
+    Type: String
+    Default: 192.168.0.0/16
+Mappings:
+  RegionMap:
+    cn-shanghai:
+      ZoneId: cn-shanghai-e
+    ch-hangzhou:
+      ZoneId: cn-hangzhou-g
+    cn-qingdao:
+      ZoneId: cn-qingdao-c
+    cn-beijing:
+      ZoneId: cn-beijing-c
+    cn-zhangjiakou:
+      ZoneId: cn-zhangjiakou-b
+    cn-huhehaote:
+      ZoneId: cn-huhehaote-a
+    cn-shenzhen:
+      ZoneId: cn-shenzhen-d
+    cn-hongkong:
+      ZoneId: cn-hongkong-c
+    ap-southeast-1:
+      ZoneId: ap-southeast-1a
+    ap-southeast-2:
+      ZoneId: ap-southeast-2a
+    ap-southeast-5:
+      ZoneId: ap-southeast-5a
+    ap-northeast-1:
+      ZoneId: ap-northeast-1a
+    eu-central-a:
+      ZoneId: eu-central-a
+    us-west-1:
+      ZoneId: us-west-1a
+    us-east-1:
+      ZoneId: us-east-1a
+    ap-south-1:
+      ZoneId: ap-south-1a
+Resources:
+  EcsVpc:
+    Type: 'ALIYUN::ECS::VPC'
+    Properties:
+      CidrBlock:
+        Ref: CidrBlock
+      VpcName:
+        Ref: VpcName
+  Database:
+    Type: 'ALIYUN::RDS::DBInstance'
+    Properties:
+      MasterUserPassword:
+        Ref: MasterUserPassword
+      VpcId:
+        'Fn::GetAtt':
+          - EcsVpc
+          - VpcId
+      DBInstanceNetType: Intranet
+      DBInstanceClass: rds.mysql.t1.small
+      PayType: Postpaid
+      SecurityIPList: 192.168.1.0/24
+      DBInstanceStorage: 5
+      VSwitchId:
+        'Fn::GetAtt':
+          - VSwitch1
+          - VSwitchId
+      MasterUsername:
+        Ref: MasterUserName
+      DBMappings:
+        - CharacterSetName: utf8
+          DBName:
+            Ref: DBName
+      Engine: MySQL
+      EngineVersion: '8.0'
+  SecurityGroup_default:
+    Type: 'ALIYUN::ECS::SecurityGroup'
+    Properties:
+      VpcId:
+        'Fn::GetAtt':
+          - EcsVpc
+          - VpcId
+      SecurityGroupName: AliyunECS_SecurityGroup1
+      SecurityGroupIngress:
+        - PortRange: 22/22
+          Priority: 1
+          SourceCidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          NicType: internet
+      SecurityGroupEgress:
+        - PortRange: '-1/-1'
+          Priority: 1
+          IpProtocol: all
+          DestCidrIp: 0.0.0.0/0
+          NicType: internet
+        - PortRange: '-1/-1'
+          Priority: 1
+          IpProtocol: all
+          DestCidrIp: 0.0.0.0/0
+          NicType: intranet
+  VSwitch1:
+    Type: 'ALIYUN::ECS::VSwitch'
+    Properties:
+      VpcId:
+        'Fn::GetAtt':
+          - EcsVpc
+          - VpcId
+      ZoneId:
+        'Fn::FindInMap':
+          - RegionMap
+          - Ref: 'ALIYUN::Region'
+          - ZoneId
+      CidrBlock: 192.168.1.0/24
+      VSwitchName: VSwitch1-x
+  rds-mysql:
+    Type: 'Aliyun::Serverless::Service'
+    Properties:
+      Description: This is mysql service
+      VpcConfig:
+        VpcId:
+          'Fn::GetAtt':
+            - EcsVpc
+            - VpcId
+        VSwitchIds:
+          - 'Fn::GetAtt':
+              - VSwitch1
+              - VSwitchId
+        SecurityGroupId:
+          'Fn::GetAtt':
+            - SecurityGroup_default
+            - SecurityGroupId
+    nodejs:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: index.handler
+        Initializer: index.initializer
+        Runtime: nodejs10
+        Timeout: 60
+        MemorySize: 512
+        CodeUri: nodejs
+        EnvironmentVariables:
+          MYSQL_HOST:
+            'Fn::GetAtt':
+              - Database
+              - InnerConnectionString
+          MYSQL_PORT:
+            'Fn::GetAtt':
+              - Database
+              - InnerPort
+          MYSQL_DBNAME:
+            Ref: DBName
+          MYSQL_USER:
+            Ref: MasterUserName
+          MYSQL_PASSWORD:
+            Ref: MasterUserPassword
+    python:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: index.handler
+        Initializer: index.initializer
+        Runtime: python3
+        Timeout: 60
+        MemorySize: 512
+        CodeUri: python
+        EnvironmentVariables:
+          MYSQL_HOST:
+            'Fn::GetAtt':
+              - Database
+              - InnerConnectionString
+          MYSQL_PORT:
+            'Fn::GetAtt':
+              - Database
+              - InnerPort
+          MYSQL_DBNAME:
+            Ref: DBName
+          MYSQL_USER:
+            Ref: MasterUserName
+          MYSQL_PASSWORD:
+            Ref: MasterUserPassword
+    java:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: 'example.App::handleRequest'
+        Initializer: 'example.App::initialize'
+        Runtime: java8
+        Timeout: 60
+        MemorySize: 512
+        CodeUri: java
+        EnvironmentVariables:
+          MYSQL_HOST:
+            'Fn::GetAtt':
+              - Database
+              - InnerConnectionString
+          MYSQL_PORT:
+            'Fn::GetAtt':
+              - Database
+              - InnerPort
+          MYSQL_DBNAME:
+            Ref: DBName
+          MYSQL_USER:
+            Ref: MasterUserName
+          MYSQL_PASSWORD:
+            Ref: MasterUserPassword
+Outputs:
+  VpcId:
+    Value:
+      'Fn::GetAtt':
+        - EcsVpc
+        - VpcId
+  DBInstanceId:
+    Value:
+      'Fn::GetAtt':
+        - Database
+        - DBInstanceId
+  SecurityGroupId:
+    Value:
+      'Fn::GetAtt':
+        - SecurityGroup_default
+        - SecurityGroupId
+  VSwitchId:
+    Value:
+      'Fn::GetAtt':
+        - VSwitch1
+        - VSwitchId
+  DBInnerConnectString:
+    Value:
+      'Fn::GetAtt':
+        - Database
+        - InnerConnectionString
+  DBInnerPort:
+    Value:
+      'Fn::GetAtt':
+        - Database
+        - InnerPort
