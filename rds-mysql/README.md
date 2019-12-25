@@ -69,6 +69,6 @@ make invoke_python
 
 ## 示例工程源码
 
-* [Nodejs 示例工程](rds-mysql/nodejs/README.md)
-* [Python 示例工程](rds-mysql/python/README.md)
-* [Java 示例工程](rds-mysql/java/README.md)
+* [Nodejs 示例工程](rds-mysql/nodejs)
+* [Python 示例工程](rds-mysql/python)
+* [Java 示例工程](rds-mysql/java)
