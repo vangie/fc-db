@@ -25,5 +25,8 @@ invoke_nodejs:
 invoke_python:
 	IGNORE_TPL_VALIDATION=true fun invoke nodejs
 
+invoke_php:
+	IGNORE_TPL_VALIDATION=true fun invoke php
+
 clean: 
 	docker rm -f mysql_for_fc
