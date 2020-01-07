@@ -2,6 +2,7 @@
 .fun
 .idea
 template.*.yml
+!template.override.yml
 **/java/target/
 *.iml
 node_modules
@@ -9,3 +10,4 @@ node_modules
 .settings
 .classpath
 .project
+.vscode

@@ -20,7 +20,7 @@ Mappings:
   RegionMap:
     cn-shanghai:
       ZoneId: cn-shanghai-e
-    ch-hangzhou:
+    cn-hangzhou:
       ZoneId: cn-hangzhou-g
     cn-qingdao:
       ZoneId: cn-qingdao-c
@@ -149,6 +149,30 @@ Resources:
         Timeout: 60
         MemorySize: 512
         CodeUri: nodejs
+        EnvironmentVariables:
+          MYSQL_HOST:
+            'Fn::GetAtt':
+              - Database
+              - InnerConnectionString
+          MYSQL_PORT:
+            'Fn::GetAtt':
+              - Database
+              - InnerPort
+          MYSQL_DBNAME:
+            Ref: DBName
+          MYSQL_USER:
+            Ref: MasterUserName
+          MYSQL_PASSWORD:
+            Ref: MasterUserPassword
+    php:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: index.handler
+        Initializer: index.initializer
+        Runtime: php7.2
+        Timeout: 60
+        MemorySize: 512
+        CodeUri: php
         EnvironmentVariables:
           MYSQL_HOST:
             'Fn::GetAtt':
