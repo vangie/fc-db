@@ -4849,11 +4849,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/txd123/Desktop/mysql/mysql.csproj",
+      "projectUniqueName": "/Users/txd123/Desktop/未命名文件夹 2/fc-db/rds-mysql/csharp/mysql.csproj",
       "projectName": "mysql",
-      "projectPath": "/Users/txd123/Desktop/mysql/mysql.csproj",
+      "projectPath": "/Users/txd123/Desktop/未命名文件夹 2/fc-db/rds-mysql/csharp/mysql.csproj",
       "packagesPath": "/Users/txd123/.nuget/packages/",
-      "outputPath": "/Users/txd123/Desktop/mysql/obj/",
+      "outputPath": "/Users/txd123/Desktop/未命名文件夹 2/fc-db/rds-mysql/csharp/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"

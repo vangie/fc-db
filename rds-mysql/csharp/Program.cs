@@ -15,7 +15,7 @@ namespace mysql
             Console.WriteLine("Hello World!");
         }
     }
-    public class fcFileHandler
+    public class MysqlHandler
      {     
             private static String host = Environment.GetEnvironmentVariable("MYSQL_HOST");
             private static String dbName = Environment.GetEnvironmentVariable("MYSQL_DBNAME");
@@ -24,6 +24,7 @@ namespace mysql
             private static string constructorString = "server=" + host + ";"+"User Id=" + user+";"+"password=" + passwd+";"+"Database="+dbName ;
         
         public void Init(IFcContext context){
+            try{
             MySqlConnection myConnnect = new MySqlConnection(constructorString);  
             myConnnect.Open();  
             MySqlCommand myCmd = new MySqlCommand("CREATE TABLE IF NOT EXISTS users (id  VARCHAR(64) NOT NULL,name    VARCHAR(128) NOT NULL,PRIMARY KEY(id))", myConnnect);
@@ -31,11 +32,15 @@ namespace mysql
             Console.WriteLine("表创建成功！"); 
              
             myCmd.Dispose();  
-            myConnnect.Close();      
+            myConnnect.Close(); 
+            }catch (Exception ex){
+                throw ex;
+            }     
 
         }
-        public Stream Echo(Stream input, IFcContext context)
+        public Stream InsertData(Stream input, IFcContext context)
         {
+            try{
             MySqlConnection myConnnect = new MySqlConnection(constructorString);  
             myConnnect.Open();  
             MySqlCommand myCmd = new MySqlCommand("insert `mydb`.`users`(`id`,`name`) values('1','too')", myConnnect);  
@@ -46,7 +51,11 @@ namespace mysql
                  
             } 
             myCmd.Dispose();  
-            myConnnect.Close();           
+            myConnnect.Close(); 
+            }catch (Exception ex){
+                throw ex;
+            }  
+                      
             byte[] hello = Encoding.UTF8.GetBytes("hello world");
             MemoryStream output = new MemoryStream();
             output.Write(hello, 0, hello.Length);

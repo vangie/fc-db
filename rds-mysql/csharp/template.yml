@@ -15,9 +15,9 @@ Resources:
     test:
       Type: 'Aliyun::Serverless::Function'
       Properties:
-        Initializer: 'mysql::mysql.fcFileHandler::Init'
+        Initializer: 'mysql::mysql.MysqlHandler::Init'
         InitializationTimeout: 3
-        Handler: 'mysql::mysql.fcFileHandler::Echo'
+        Handler: 'mysql::mysql.MysqlHandler::InsertData'
         Runtime: dotnetcore2.1
         Timeout: 60
         MemorySize: 512
