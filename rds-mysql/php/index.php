@@ -1,5 +1,6 @@
 <?php
-function initializer($context) {
+function initializer($context)
+{
     $pdo = null;
     try {
         $pdo = new_pdo($context);
@@ -12,22 +13,22 @@ function initializer($context) {
         $pdo->beginTransaction();
         $pdo->exec($sql);
         $pdo->commit();
-    } catch (PDOException $e){
-        if( !empty($pdo) ) {
+    } catch (PDOException $e) {
+        if (!empty($pdo)) {
             $pdo->rollback();
-        }  
+        }
         echo $e->getMessage();
     }
     return "The table `users` has been created!\r\n";
 }
 
-function handler($event, $context) {
-    $dbname = $_ENV['MYSQL_DBNAME'];
+function handler($event, $context)
+{
     $pdo = null;
     try {
         $pdo = new_pdo($context);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  
+
         $pdo->beginTransaction();
         $pdo->exec("REPLACE INTO users (`id`,`name`) values('4','too')");
         $pdo->commit();
@@ -39,16 +40,17 @@ function handler($event, $context) {
             $users = $users . ", " . $row['name'];
         }
 
-        return $users;    
-    }catch(PDOException $e){
-        if(!empty($pdo)) {
+        return $users;
+    } catch (PDOException $e) {
+        if (!empty($pdo)) {
             $pdo->rollback();
         }
         return $e->getMessage();
     }
 }
 
-function new_pdo($context) {
+function new_pdo($context)
+{
     $mysql_host = $_ENV['MYSQL_HOST'];
     $mysql_port = $_ENV['MYSQL_PORT'];
     $mysql_user = $_ENV['MYSQL_USER'];
