@@ -8,3 +8,4 @@
   * [Nodejs 示例工程](rds-mysql/nodejs)
   * [Python 示例工程](rds-mysql/python)
   * [Java 示例工程](rds-mysql/java)
+  * [PHP 示例工程](rds-mysql/php)
