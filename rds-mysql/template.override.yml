@@ -1,0 +1,12 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+  rds-mysql:
+    php:
+      Properties:
+        EnvironmentVariables:
+          MYSQL_HOST: host.docker.internal
+          MYSQL_PORT: 33061
+          MYSQL_DBNAME: mydb
+          MYSQL_USER: fc-user
+          MYSQL_PASSWORD: my-secret-pw

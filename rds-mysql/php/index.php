@@ -1,41 +1,58 @@
 <?php
 function initializer($context) {
-    $servername = $_ENV['MYSQL_HOST'];
-    $username = $_ENV['MYSQL_USER'];
-    $password = $_ENV['MYSQL_PASSWORD'];
-    $dbname = $_ENV['MYSQL_DBNAME'];
-    global $conn;
-
+    $pdo = null;
     try {
-        $conn = new PDO("mysql:host=$servername;dbname=$dbname",$username,$password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new_pdo($context);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $sql = "CREATE TABLE IF NOT EXISTS users (
-            id        VARCHAR(64) NOT NULL,
+            id      VARCHAR(64) NOT NULL,
             name    VARCHAR(128) NOT NULL,
             PRIMARY KEY(id))";
-        $conn->exec($sql);
-        echo "数据表 MyGuests 创建成功";
-        echo "\r\n";
-    }catch(PDOException $e){
+        $pdo->beginTransaction();
+        $pdo->exec($sql);
+        $pdo->commit();
+    } catch (PDOException $e){
+        if( !empty($pdo) ) {
+            $pdo->rollback();
+        }  
         echo $e->getMessage();
     }
+    return "The table `users` has been created!\r\n";
 }
 
 function handler($event, $context) {
+    $dbname = $_ENV['MYSQL_DBNAME'];
+    $pdo = null;
     try {
-      $GLOBALS['conn']->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new_pdo($context);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   
-      $GLOBALS['conn']->beginTransaction();
-      $GLOBALS['conn']->exec("insert `mydb`.`users`(`id`,`name`) values('1','too')");
-      $row=$GLOBALS['conn']->commit();
-      echo "新记录插入成功";
-      echo "\r\n";
-      return $row;    
+        $pdo->beginTransaction();
+        $pdo->exec("REPLACE INTO users (`id`,`name`) values('4','too')");
+        $pdo->commit();
+
+        $stmt = $pdo->query("SELECT * FROM users");
+
+        $users = '';
+        while ($row = $stmt->fetch()) {
+            $users = $users . ", " . $row['name'];
+        }
+
+        return $users;    
     }catch(PDOException $e){
-      $GLOBALS['conn']->rollback();
-      echo $e->getMessage();
-      return '插入失败！';
+        if(!empty($pdo)) {
+            $pdo->rollback();
+        }
+        return $e->getMessage();
+    }
 }
 
+function new_pdo($context) {
+    $mysql_host = $_ENV['MYSQL_HOST'];
+    $mysql_port = $_ENV['MYSQL_PORT'];
+    $mysql_user = $_ENV['MYSQL_USER'];
+    $mysql_password = $_ENV['MYSQL_PASSWORD'];
+    $mysql_dbname = $_ENV['MYSQL_DBNAME'];
+    return new PDO("mysql:host=$mysql_host;port=$mysql_port;dbname=$mysql_dbname", $mysql_user, $mysql_password);
 }
