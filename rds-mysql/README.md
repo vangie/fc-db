@@ -65,6 +65,8 @@ make invoke_nodejs
 # python
 make invoke_python
 
+# PHP
+make invoke_php
 ```
 
 ## 示例工程源码
@@ -72,3 +74,4 @@ make invoke_python
 * [Nodejs 示例工程](nodejs)
 * [Python 示例工程](python)
 * [Java 示例工程](java)
+* [PHP 示例工程](php)
