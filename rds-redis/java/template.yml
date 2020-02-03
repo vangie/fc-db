@@ -1,0 +1,28 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+  Redis-test:
+    Type: 'Aliyun::Serverless::Service'
+    Properties:
+      Description: This is Redis service
+      Role: 'acs:ram::1986114430573743:role/fc-public-test'
+      LogConfig:
+        Project: fc-test-txd
+        Logstore: txd123
+      VpcConfig:
+        VpcId: vpc-bp1wv9al02opqahkizmvr
+        VSwitchIds:
+          - vsw-bp1kablus0jrcdeth8v35
+        SecurityGroupId: sg-bp1f8rai4kd8tzup9pdh
+      InternetAccess: true
+    Java-test:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: 'example.App::handleRequest'
+        Runtime: java8
+        Timeout: 10
+        MemorySize: 128
+        CodeUri: './'
+        EnvironmentVariables:
+          REDIS_HOST: r-bp1vv8p3c4x0v6e4zt.redis.rds.aliyuncs.com
+          REDIS_PASSWORD: Txd1231512315

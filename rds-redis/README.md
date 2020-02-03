@@ -1,4 +1,4 @@
-# 函数计算访问 MySQL 示例集
+# 函数计算访问 Redis 示例集
 
 ## 依赖工具
 
@@ -34,7 +34,7 @@ $ fun --version
 
 ```bash
 git clone http://github.com/vangie/fc-db
-cd fc-db/rds-mysql
+cd fc-db/rds-redis
 ```
 
 ## 构建

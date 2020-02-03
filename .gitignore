@@ -11,6 +11,6 @@ node_modules
 .classpath
 .project
 .vscode
-[Bb]in/
-[Oo]bj/
-[Oo]ut/
+*/dotnetcore/[Bb]in/
+*/dotnetcore/[Oo]bj/
+*/dotnetcore/[Oo]ut/

@@ -1,0 +1,248 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Parameters:
+  Password:
+    Type: String
+    Default: masteruser@Passwd
+  VpcName:
+    Type: String
+    Default: myVPC
+  CidrBlock:
+    Type: String
+    Default: 192.168.0.0/16
+Mappings:
+  RegionMap:
+    cn-shanghai:
+      ZoneId: cn-shanghai-e
+    cn-hangzhou:
+      ZoneId: cn-hangzhou-g
+    cn-qingdao:
+      ZoneId: cn-qingdao-c
+    cn-beijing:
+      ZoneId: cn-beijing-c
+    cn-zhangjiakou:
+      ZoneId: cn-zhangjiakou-b
+    cn-huhehaote:
+      ZoneId: cn-huhehaote-a
+    cn-shenzhen:
+      ZoneId: cn-shenzhen-d
+    cn-hongkong:
+      ZoneId: cn-hongkong-c
+    ap-southeast-1:
+      ZoneId: ap-southeast-1a
+    ap-southeast-2:
+      ZoneId: ap-southeast-2a
+    ap-southeast-5:
+      ZoneId: ap-southeast-5a
+    ap-northeast-1:
+      ZoneId: ap-northeast-1a
+    eu-central-a:
+      ZoneId: eu-central-a
+    us-west-1:
+      ZoneId: us-west-1a
+    us-east-1:
+      ZoneId: us-east-1a
+    ap-south-1:
+      ZoneId: ap-south-1a
+Resources:
+  EcsVpc:
+    Type: 'ALIYUN::ECS::VPC'
+    Properties:
+      CidrBlock:
+        Ref: CidrBlock
+      VpcName:
+        Ref: VpcName
+  VSwitch1:
+    Type: 'ALIYUN::ECS::VSwitch'
+    Properties:
+      VpcId:
+        'Fn::GetAtt':
+          - EcsVpc
+          - VpcId
+      ZoneId:
+        'Fn::FindInMap':
+          - RegionMap
+          - Ref: 'ALIYUN::Region'
+          - ZoneId
+      CidrBlock: 192.168.1.0/24
+      VSwitchName: VSwitch1-x
+  SecurityGroup_default:
+    Type: 'ALIYUN::ECS::SecurityGroup'
+    Properties:
+      VpcId:
+        'Fn::GetAtt':
+          - EcsVpc
+          - VpcId
+      SecurityGroupName: AliyunECS_SecurityGroup1
+      SecurityGroupIngress:
+        - PortRange: 22/22
+          Priority: 1
+          SourceCidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          NicType: internet
+      SecurityGroupEgress:
+        - PortRange: '-1/-1'
+          Priority: 1
+          IpProtocol: all
+          DestCidrIp: 0.0.0.0/0
+          NicType: internet
+        - PortRange: '-1/-1'
+          Priority: 1
+          IpProtocol: all
+          DestCidrIp: 0.0.0.0/0
+          NicType: intranet
+  Cache:
+    Type: 'ALIYUN::REDIS::Instance'
+    Properties:
+      EngineVersion: '5.0'
+      VpcId:
+        'Fn::GetAtt':
+          - EcsVpc
+          - VpcId
+      ZoneId:
+        'Fn::FindInMap':
+          - RegionMap
+          - Ref: 'ALIYUN::Region'
+          - ZoneId
+      Capacity: 1
+      VSwitchId:
+        'Fn::GetAtt':
+          - VSwitch1
+          - VSwitchId
+      InstanceClass: 'redis.master.small.default'
+      Password: 
+        Ref: Password
+  rds-redis: 
+    Type: 'Aliyun::Serverless::Service'
+    Properties:
+      Description: This is FC service for redis
+      VpcConfig:
+        VpcId:
+          'Fn::GetAtt':
+            - EcsVpc
+            - VpcId
+        VSwitchIds:
+          - 'Fn::GetAtt':
+              - VSwitch1
+              - VSwitchId
+        SecurityGroupId:
+          'Fn::GetAtt':
+            - SecurityGroup_default
+            - SecurityGroupId
+    nodejs: 
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: index.handler
+        Runtime: nodejs10
+        CodeUri: nodejs/
+        MemorySize: 128
+        Timeout: 15
+        EnvironmentVariables:
+          REDIS_HOST:
+            'Fn::GetAtt':
+              - Cache
+              - ConnectionDomain
+          REDIS_PASSWORD:
+            Ref: Password
+          REDIS_PORT: 
+            'Fn::GetAtt':
+              - Cache
+              - Port
+    python:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: 'index.handler'
+        Runtime: python3
+        Timeout: 10
+        MemorySize: 128
+        CodeUri: python/
+        EnvironmentVariables:
+          REDIS_HOST:
+            'Fn::GetAtt':
+              - Cache
+              - ConnectionDomain
+          REDIS_PASSWORD:
+            Ref: Password
+          REDIS_PORT: 
+            'Fn::GetAtt':
+              - Cache
+              - Port
+          PYTHONPATH: /code/.fun/python/lib/python/site-packages
+    java:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: 'example.App::handleRequest'
+        Runtime: java8
+        Timeout: 60
+        MemorySize: 512
+        CodeUri: java/
+        EnvironmentVariables:
+          REDIS_HOST:
+            'Fn::GetAtt':
+              - Cache
+              - ConnectionDomain
+          REDIS_PASSWORD:
+            Ref: Password
+          REDIS_PORT: 
+            'Fn::GetAtt':
+              - Cache
+              - Port
+    php:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: index.handler
+        Runtime: php7.2
+        Timeout: 60
+        MemorySize: 512
+        CodeUri: php
+        EnvironmentVariables:
+          REDIS_HOST:
+            'Fn::GetAtt':
+              - Cache
+              - ConnectionDomain
+          REDIS_PASSWORD:
+            Ref: Password
+          REDIS_PORT: 
+            'Fn::GetAtt':
+              - Cache
+              - Port
+    dotnetcore:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: 'redis::redis.RedisHandler::Handler'
+        Runtime: dotnetcore2.1
+        Timeout: 60
+        MemorySize: 512
+        CodeUri: ./dotnetcore
+        EnvironmentVariables:
+          REDIS_HOST:
+            'Fn::GetAtt':
+              - Cache
+              - ConnectionDomain
+          REDIS_PASSWORD:
+            Ref: Password
+          REDIS_PORT: 
+            'Fn::GetAtt':
+              - Cache
+              - Port
+Outputs:
+  VpcId:
+    Value:
+      'Fn::GetAtt':
+        - EcsVpc
+        - VpcId
+  SecurityGroupId:
+    Value:
+      'Fn::GetAtt':
+        - SecurityGroup_default
+        - SecurityGroupId
+  VSwitchId:
+    Value:
+      'Fn::GetAtt':
+        - VSwitch1
+        - VSwitchId
+  RedisInstanceId:
+    Value:
+      'Fn::GetAtt':
+        - Cache
+        - InstanceId

@@ -1,0 +1,30 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+  mysql-test-rds-mysql-6976C51BE0E8:
+    Type: 'Aliyun::Serverless::Service'
+    Properties:
+      Description: This is mysql service
+      Role: 'acs:ram::1986114430573743:role/mysql-test-rds-mysqlrole-03b637810896'
+      VpcConfig:
+        VpcId: vpc-hp3cpshxpkf5qu018z0w6
+        VSwitchIds:
+          - vsw-hp3d1hkejje4tny27cqpr
+        SecurityGroupId: sg-hp3ikp9yw76ps8qxkief
+      InternetAccess: true
+    donet-test:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Initializer: 'mysql::mysql.MysqlHandler::Init'
+        InitializationTimeout: 3
+        Handler: 'mysql::mysql.MysqlHandler::InsertData'
+        Runtime: dotnetcore2.1
+        Timeout: 60
+        MemorySize: 512
+        CodeUri: './bin/Release/netcoreapp2.1/publish/'
+        EnvironmentVariables:
+          MYSQL_DBNAME: mydb
+          MYSQL_HOST: XXX.mysql.huhehaote.rds.aliyuncs.com
+          MYSQL_PASSWORD: Passwd
+          MYSQL_PORT: '3306'
+          MYSQL_USER: username

@@ -1,14 +1,16 @@
-STACK_NAME ?= mysql-test
+STACK_NAME ?= redis-test
 
-start_mysql:
-	bin/start_mysql.sh
+start_redis:
+	bin/start_redis.sh
 
-stop_mysql:
-	docker stop mysql_for_fc
+stop_redis:
+	docker stop redis_for_fc
+
+clean: 
+	docker rm -f redis_for_fc
 
 build:
 	IGNORE_TPL_VALIDATION=true fun build
-
 
 deploy:
 	fun package
@@ -28,9 +30,3 @@ invoke_python:
 
 invoke_php:
 	IGNORE_TPL_VALIDATION=true fun invoke php
-
-local_invoke_php:
-	IGNORE_TPL_VALIDATION=true fun local invoke -t template.yml -t template.override.yml php
-
-clean: 
-	docker rm -f mysql_for_fc
