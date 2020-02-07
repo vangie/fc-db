@@ -22,6 +22,9 @@ invoke_java:
 invoke_nodejs:
 	IGNORE_TPL_VALIDATION=true fun invoke nodejs 
 
+invoke_dotnetcore:
+	IGNORE_TPL_VALIDATION=true fun invoke dotnetcore 
+
 invoke_python:
 	IGNORE_TPL_VALIDATION=true fun invoke nodejs
 

@@ -164,6 +164,30 @@ Resources:
             Ref: MasterUserName
           MYSQL_PASSWORD:
             Ref: MasterUserPassword
+    dotnetcore:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Initializer: 'mysql::mysql.MysqlHandler::Initializer'
+        Handler: 'mysql::mysql.MysqlHandler::Handler'
+        Runtime: dotnetcore2.1
+        Timeout: 60
+        MemorySize: 512
+        CodeUri: ./dotnetcore
+        EnvironmentVariables:
+          MYSQL_HOST:
+            'Fn::GetAtt':
+              - Database
+              - InnerConnectionString
+          MYSQL_PORT:
+            'Fn::GetAtt':
+              - Database
+              - InnerPort
+          MYSQL_DBNAME:
+            Ref: DBName
+          MYSQL_USER:
+            Ref: MasterUserName
+          MYSQL_PASSWORD:
+            Ref: MasterUserPassword
     php:
       Type: 'Aliyun::Serverless::Function'
       Properties:
