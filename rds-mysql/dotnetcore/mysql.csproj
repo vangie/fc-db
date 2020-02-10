@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+     <PackageReference Include="Aliyun.Serverless.Core" Version="1.0.1" />
+     <PackageReference Include="MySql.Data" Version="8.0.18" />
+  </ItemGroup>
+</Project>

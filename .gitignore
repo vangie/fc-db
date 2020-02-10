@@ -11,3 +11,6 @@ node_modules
 .classpath
 .project
 .vscode
+[Bb]in/
+[Oo]bj/
+[Oo]ut/

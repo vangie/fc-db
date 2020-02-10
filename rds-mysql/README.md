@@ -23,11 +23,11 @@ Windows 和 Linux 用户安装请参考：
 
 安装好后，记得先执行 `fun config` 初始化一下配置。
 
-**注意**, 如果你已经安装过了 funcraft，确保 funcraft 的版本在 3.0.6 以上。
+**注意**, 如果你已经安装过了 funcraft，确保 funcraft 的版本在 3.5.1 以上。
 
 ```bash
 $ fun --version
-3.0.6
+3.5.1
 ```
 
 ## 初始化
@@ -75,3 +75,4 @@ make invoke_php
 * [Python 示例工程](python)
 * [Java 示例工程](java)
 * [PHP 示例工程](php)
+* [Dotnetcore 示例工程](dotnetcore)
