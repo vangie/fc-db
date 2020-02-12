@@ -91,7 +91,7 @@ Resources:
           IpProtocol: all
           DestCidrIp: 0.0.0.0/0
           NicType: intranet
-  Cache:
+  Redis:
     Type: 'ALIYUN::REDIS::Instance'
     Properties:
       EngineVersion: '5.0'
@@ -112,7 +112,15 @@ Resources:
       InstanceClass: 'redis.master.small.default'
       Password: 
         Ref: Password
-  rds-redis: 
+  RedisWhitelist:
+    Type: 'ALIYUN::REDIS::Whitelist'
+    Properties:
+      InstanceId: 
+        'Fn::GetAtt':
+          - Redis
+          - InstanceId
+      SecurityIps: 192.168.1.0/24
+  fc-redis: 
     Type: 'Aliyun::Serverless::Service'
     Properties:
       Description: This is FC service for redis
@@ -140,13 +148,13 @@ Resources:
         EnvironmentVariables:
           REDIS_HOST:
             'Fn::GetAtt':
-              - Cache
+              - Redis
               - ConnectionDomain
           REDIS_PASSWORD:
             Ref: Password
           REDIS_PORT: 
             'Fn::GetAtt':
-              - Cache
+              - Redis
               - Port
     python:
       Type: 'Aliyun::Serverless::Function'
@@ -159,13 +167,13 @@ Resources:
         EnvironmentVariables:
           REDIS_HOST:
             'Fn::GetAtt':
-              - Cache
+              - Redis
               - ConnectionDomain
           REDIS_PASSWORD:
             Ref: Password
           REDIS_PORT: 
             'Fn::GetAtt':
-              - Cache
+              - Redis
               - Port
           PYTHONPATH: /code/.fun/python/lib/python/site-packages
     java:
@@ -179,13 +187,13 @@ Resources:
         EnvironmentVariables:
           REDIS_HOST:
             'Fn::GetAtt':
-              - Cache
+              - Redis
               - ConnectionDomain
           REDIS_PASSWORD:
             Ref: Password
           REDIS_PORT: 
             'Fn::GetAtt':
-              - Cache
+              - Redis
               - Port
     php:
       Type: 'Aliyun::Serverless::Function'
@@ -198,13 +206,13 @@ Resources:
         EnvironmentVariables:
           REDIS_HOST:
             'Fn::GetAtt':
-              - Cache
+              - Redis
               - ConnectionDomain
           REDIS_PASSWORD:
             Ref: Password
           REDIS_PORT: 
             'Fn::GetAtt':
-              - Cache
+              - Redis
               - Port
     dotnetcore:
       Type: 'Aliyun::Serverless::Function'
@@ -217,13 +225,13 @@ Resources:
         EnvironmentVariables:
           REDIS_HOST:
             'Fn::GetAtt':
-              - Cache
+              - Redis
               - ConnectionDomain
           REDIS_PASSWORD:
             Ref: Password
           REDIS_PORT: 
             'Fn::GetAtt':
-              - Cache
+              - Redis
               - Port
 Outputs:
   VpcId:
@@ -244,5 +252,5 @@ Outputs:
   RedisInstanceId:
     Value:
       'Fn::GetAtt':
-        - Cache
+        - Redis
         - InstanceId

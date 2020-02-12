@@ -26,9 +26,7 @@ public class App implements StreamRequestHandler {
 
             System.out.println("counter: " + counter);
 
-            counter = Integer.toString(Integer.parseInt(counter) + 1);
-
-            jedis.set("counter", counter);
+            jedis.set("counter", Integer.toString(Integer.parseInt(counter) + 1));
             jedis.quit();
             jedis.close();
 
