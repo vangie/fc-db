@@ -10,3 +10,11 @@ Resources:
           MYSQL_DBNAME: mydb
           MYSQL_USER: fc-user
           MYSQL_PASSWORD: my-secret-pw
+    python:
+      Properties:
+        EnvironmentVariables:
+          MYSQL_HOST: host.docker.internal
+          MYSQL_PORT: 33061
+          MYSQL_DBNAME: mydb
+          MYSQL_USER: fc-user
+          MYSQL_PASSWORD: my-secret-pw      

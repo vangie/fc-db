@@ -1,0 +1,22 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+  redis:
+    nodejs:
+      Properties:
+        EnvironmentVariables:
+          REDIS_HOST: host.docker.internal
+          REDIS_PORT: 6379
+          REDIS_PASSWORD: foobared
+    python:
+      Properties:
+        EnvironmentVariables:
+          REDIS_HOST: host.docker.internal
+          REDIS_PORT: 6379
+          REDIS_PASSWORD: foobared
+    java:
+      Properties:
+        EnvironmentVariables:
+          REDIS_HOST: host.docker.internal
+          REDIS_PORT: 6379
+          REDIS_PASSWORD: foobared
