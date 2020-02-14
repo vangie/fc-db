@@ -32,9 +32,7 @@ namespace redis
             cache.Set("dotnet_counter", BitConverter.GetBytes(counter + 1));
 
             counterBytes = BitConverter.GetBytes(counter);
-            MemoryStream output = new MemoryStream();
-            output.Write(counterBytes, 0, counterBytes.Length);
-            output.Seek(0, SeekOrigin.Begin);
+            MemoryStream output = new MemoryStream(counterBytes);
             return output;
         }
 
