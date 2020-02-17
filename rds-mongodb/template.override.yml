@@ -1,0 +1,19 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+  fc-mongodb:
+    nodejs:
+      Properties:
+        EnvironmentVariables:
+          MONGO_DATABASE: admin
+          MONGO_URL: mongodb://mongoadmin:secret@host.docker.internal:27017/admin
+    python:
+      Properties:
+        EnvironmentVariables:
+          MONGO_DATABASE: admin
+          MONGO_URL: mongodb://mongoadmin:secret@host.docker.internal:27017/admin
+    java:
+      Properties:
+        EnvironmentVariables:
+          MONGO_DATABASE: admin
+          MONGO_URL: mongodb://mongoadmin:secret@host.docker.internal:27017/admin
