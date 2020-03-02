@@ -20,4 +20,5 @@
   * [Nodejs 示例工程](rds-mongodb/nodejs)
   * [Python 示例工程](rds-mongodb/python)
   * [Java 示例工程](rds-mongodb/java)
+  * [PHP 示例工程](rds-mongodb/php)
   * [.NetCore 示例工程](rds-mongodb/dotnetcore)
