@@ -1,0 +1,7 @@
+RUNTIME php7.2
+
+# https://github.com/doctrine/DoctrineMongoDBBundle/issues/450
+RUN apt-get update && apt-get install -y libcurl4-openssl-dev pkg-config libssl-dev
+RUN pecl install mongodb
+RUN mkdir -p /code/extension && mv /usr/local/lib/php/extensions/*/mongodb.so /code/extension
+RUN echo "extension=/code/extension/mongodb.so" > /code/extension/mongodb.ini
