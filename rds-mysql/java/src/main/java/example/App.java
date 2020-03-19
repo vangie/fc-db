@@ -61,7 +61,7 @@ public class App implements StreamRequestHandler, FunctionInitializer {
 
             resultSet = stmt.executeQuery("SELECT * FROM users");
 
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 logger.info("user: " + resultSet.getString(2));
             }
 
