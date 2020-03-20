@@ -1,0 +1,44 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+    fc-sqlserver: # service name
+      nodejs: 
+        Properties:
+          EnvironmentVariables:
+            MSSQL_SERVER: host.docker.internal
+            MSSQL_PORT: 1433
+            MSSQL_USER: sa
+            MSSQL_PASSWORD: Foobared!
+            MSSQL_DATABASE: tempdb
+      java:
+        Properties:
+          EnvironmentVariables:
+            MSSQL_SERVER: host.docker.internal
+            MSSQL_PORT: 1433
+            MSSQL_USER: sa
+            MSSQL_PASSWORD: Foobared!
+            MSSQL_DATABASE: tempdb
+      python:
+        Properties:
+          EnvironmentVariables:
+            MSSQL_SERVER: host.docker.internal
+            MSSQL_PORT: 1433
+            MSSQL_USER: sa
+            MSSQL_PASSWORD: Foobared!
+            MSSQL_DATABASE: tempdb
+      php:
+        Properties:
+          EnvironmentVariables:
+            MSSQL_SERVER: host.docker.internal
+            MSSQL_PORT: 1433
+            MSSQL_USER: sa
+            MSSQL_PASSWORD: Foobared!
+            MSSQL_DATABASE: tempdb
+      dotnetcore:
+        Properties:
+          EnvironmentVariables:
+            MSSQL_SERVER: host.docker.internal
+            MSSQL_PORT: 1433
+            MSSQL_USER: sa
+            MSSQL_PASSWORD: Foobared!
+            MSSQL_DATABASE: tempdb

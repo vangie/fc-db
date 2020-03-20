@@ -1,0 +1,11 @@
+RUNTIME php7.2
+RUN apt-get update && apt-get install -y apt-transport-https apt-utils
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/debian/8/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN fun-install apt-get install msodbcsql17
+
+
+RUN apt-get install -y unixodbc-dev
+RUN pecl install pdo_sqlsrv
+RUN mkdir -p /code/extension && mv /usr/local/lib/php/extensions/*/pdo_sqlsrv.so /code/extension
+RUN echo "extension=/code/extension/pdo_sqlsrv.so" > /code/extension/pdo_sqlsrv.ini

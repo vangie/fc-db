@@ -70,5 +70,5 @@ make invoke_dotnetcore
 * [Nodejs 示例工程](nodejs)
 * [Python 示例工程](python)
 * [Java 示例工程](java)
-* [Dotnetcore 示例工程](dotnetcore)
+* [.NetCore 示例工程](dotnetcore)
 * [PHP 示例工程](php)
