@@ -1,0 +1,29 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+  PostgreSQL-test:
+    Type: 'Aliyun::Serverless::Service'
+    Properties:
+      Description: This is SQL-Server service
+      Role: 'acs:ram::1986114430573743:role/fc-public-test'
+      VpcConfig:
+        VpcId: vpc-bp1wv9al02opqahkizmvr
+        VSwitchIds:
+          - vsw-bp1kablus0jrcdeth8v35
+        SecurityGroupId: sg-bp1h2swzeb5vgjfu6gpo
+      InternetAccess: true
+    dotnetcore-test:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: 'postsql::PostgreSQL.MssqlHandler::Handler'
+        Initializer: 'postsql::PostgreSQL.MssqlHandler::Initializer'
+        Runtime: dotnetcore2.1
+        Timeout: 10
+        MemorySize: 128
+        CodeUri: './bin/Release/netcoreapp2.1/publish/'
+        EnvironmentVariables:
+          HOST: pgm-bp1yawvyyu7ptt1n129190.pg.rds.aliyuncs.com
+          PASSWORD: Txd1231512315
+          PORT: 1433
+          DATABASE: test_123
+          USER: txd123

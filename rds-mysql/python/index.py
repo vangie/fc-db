@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
-import pymysql
+import psycopg2
 import os,sys
 
 logger = logging.getLogger()
